@@ -13,6 +13,16 @@ const styles = StyleSheet.create({
     width: '100%',
     height: 400,
   },
+  actionBar: {
+    display: 'flex',
+    flexDirection: 'row',
+    alignContent: 'center',
+    justifyContent: 'space-evenly',
+  },
+  actionItem: {
+    height: 50,
+    display: 'flex',
+  },
 });
 
 export default styles;

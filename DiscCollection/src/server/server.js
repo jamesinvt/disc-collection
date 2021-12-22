@@ -87,6 +87,11 @@ app.post('/request', upload.single('file'), (req, res) => {
         }
       }
       console.log('safeArray', safeArray);
+      console.log(`https://api.discogs.com/database/search?q=${encodeURIComponent(
+        bestGuess,
+      )}&type=release&key=${process.env.DISCOG_KEY}&secret=${
+        process.env.DISCOG_SECRET
+      }`);
       const discogsSearchResponse = fetch(
         // eslint-disable-next-line quotes
         `https://api.discogs.com/database/search?q=${encodeURIComponent(

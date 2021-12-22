@@ -1,11 +1,29 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import ListItem from '../../components/ListItem';
 import styles from './styles';
-
+import useStore from '../../hooks/useStore';
 import {Pressable, SafeAreaView, FlatList} from 'react-native';
+import {useAsyncStorage} from '@react-native-async-storage/async-storage';
+import testVinyls from '../../../tests/vinyls.json';
+import {useIsFocused} from '@react-navigation/native';
 
+const STORAGE_KEY = '@wishlist';
 const WishList = ({navigation}) => {
-  const [data, setData] = useState({});
+  const isFocused = useIsFocused();
+  const {getItem} = useAsyncStorage(STORAGE_KEY);
+  const [data, setData] = useState([]);
+  const fetchWishlist = async () => {
+    const item = await getItem();
+    setData(JSON.parse(item));
+  };
+
+  useEffect(() => {
+    if (!isFocused) {
+      return;
+    }
+    console.log('rendering wishlist');
+    fetchWishlist();
+  }, [isFocused]);
 
   const renderItem = ({item}) => {
     const backgroundColor = item.id === data ? '#6e3b6e' : '#f9c2ff';
@@ -32,7 +50,7 @@ const WishList = ({navigation}) => {
       <FlatList
         data={data}
         renderItem={renderItem}
-        keyExtractor={item => item.id}
+        keyExtractor={(item, index) => index}
       />
     </SafeAreaView>
   );
