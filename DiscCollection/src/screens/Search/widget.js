@@ -1,52 +1,43 @@
-import React, {useState} from 'react';
-import ListItem from '../../components/ListItem';
-import testData from '../../../tests/vinyls.json';
+import React, { useState, useEffect } from 'react';
 import styles from './styles';
-
-import {Pressable, SafeAreaView, FlatList} from 'react-native';
+import { SafeAreaView, Text, TextInput } from 'react-native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import Record from '../Record';
+import SearchResults from '../../components/SearchResults/widget';
+import useDebounce from '../../hooks/useDebounce';
 
-const Search = ({navigation}) => {
-  const [data, setData] = useState(testData);
+const Search = ({ navigation, route }) => {
+  const [searchTerm, setSearchTerm] = useState(route.params?.searchTerm);
 
-  const renderItem = ({item}) => {
-    const backgroundColor = item.id === data ? '#6e3b6e' : '#f9c2ff';
-    const color = item.id === data ? 'white' : 'black';
+  const debouncedSearchTerm = useDebounce(searchTerm, 500);
+  
+  useEffect(() => {
+    try {
+      if (route.params?.searchTerm) {
+        console.log('change searchTerm debounce')
+        setSearchTerm(route.params.searchTerm);
+      }
+    } catch (error) {
+      console.log(`Error with search ${error}`);
+    }
+  }, [route.params?.searchTerm]);
 
-    return (
-      <Pressable
-        onPress={() =>
-          navigation.navigate('Record', {
-            screen: 'Record',
-            data: item,
-          })
-        }>
-        <ListItem
-          item={item}
-          backgroundColor={{backgroundColor}}
-          textColor={{color}}
-        />
-      </Pressable>
-    );
-  };
   return (
     <SafeAreaView>
-      <FlatList
-        data={testData}
-        renderItem={renderItem}
-        keyExtractor={item => item.id}
-      />
+      <TextInput value={searchTerm} onChangeText={setSearchTerm} />
+      <SearchResults searchTerm={debouncedSearchTerm} />
     </SafeAreaView>
   );
 };
-const HomeStack = createNativeStackNavigator();
 
-function SearchScreen({navigation}) {
+const SearchStack = createNativeStackNavigator();
+
+function SearchStackScreen({ navigation }) {
   return (
-    <HomeStack.Navigator>
-      <HomeStack.Group>
-      </HomeStack.Group>
-    </HomeStack.Navigator>
+    <SearchStack.Navigator>
+      <SearchStack.Screen name="Search" component={Search} />
+    </SearchStack.Navigator>
   );
 }
-export default SearchScreen;
+
+export default SearchStackScreen;

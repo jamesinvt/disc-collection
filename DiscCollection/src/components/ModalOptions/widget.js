@@ -24,33 +24,37 @@ const ModalOptions = ({navigation}) => {
       //   launchCamera(options, () => {
       //   }));
     } else if (type === 'library') {
-      launchImageLibrary(options = {includeBase64: true}, response => {
+      launchImageLibrary((options = {includeBase64: true}), response => {
         console.log('Begin Search');
         if (response.error) {
           console.log('ImagePicker Error: ', response.error);
         } else if (response.customButton) {
           console.log('User tapped custom button: ', response.customButton);
         } else {
-          fetch('http://10.0.0.53:5000/request', {
+          fetch('http://10.0.0.53:5000/googleGuess', {
             method: 'POST',
             headers: new Headers({
-              'Content-Type': 'application/x-www-form-urlencoded', //Specifying the Content-Type
+              'Content-Type': 'application/x-www-form-urlencoded',
             }),
             body: createFormData(response.assets[0], {id: '123'}),
           })
-            .then(data => data.json())
+            .then(data => {
+              const json = data.json();
+              console.log(json);
+               return json;
+            })
             .then(res => {
-              console.log({res});
-              const test = testData[0];
-              console.log({test});
-
-              navigation.navigate('Record', {data: res});
-            //   navigation.goBack();
-            //   navigation.navigate('Record', {data: testData[0]});
+              //   navigation.goBack();
+              console.log(`search term: ${res.bestGuess}`);
+              navigation.navigate('SearchScreen', {
+                screen: 'Search',
+                params: {searchTerm: res.bestGuess},
+              });
             })
             .catch(error => {
               console.log('upload error', error);
             });
+          // navigation.navigate('SearchScreen', { screen: 'SearchResults', params: {data: testData }});
         }
       });
     }

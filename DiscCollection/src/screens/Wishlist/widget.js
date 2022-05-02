@@ -6,8 +6,22 @@ import {Pressable, SafeAreaView, FlatList} from 'react-native';
 import {useAsyncStorage} from '@react-native-async-storage/async-storage';
 import testVinyls from '../../../tests/vinyls.json';
 import {useIsFocused} from '@react-navigation/native';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import Record from '../Record';
 
 const STORAGE_KEY = '@wishlist';
+
+const WishlistStack = createNativeStackNavigator();
+
+function WishlistStackScreen() {
+  return (
+    <WishlistStack.Navigator>
+      <WishlistStack.Screen name="WishList" component={WishList} />
+      <WishlistStack.Screen name="Record" component={Record} />
+    </WishlistStack.Navigator>
+  );
+}
+
 const WishList = ({navigation}) => {
   const isFocused = useIsFocused();
   const {getItem} = useAsyncStorage(STORAGE_KEY);
@@ -56,4 +70,4 @@ const WishList = ({navigation}) => {
   );
 };
 
-export default WishList;
+export default WishlistStackScreen;

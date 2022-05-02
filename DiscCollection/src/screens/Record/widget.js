@@ -1,5 +1,5 @@
-import * as React from 'react';
-import {View, Text, Image, Pressable} from 'react-native';
+import React, {useEffect, useState} from 'react';
+import {View, Text, Image, Pressable, SafeAreaView} from 'react-native';
 import {useAsyncStorage} from '@react-native-async-storage/async-storage';
 import styles from './styles';
 import useStore from '../../hooks/useStore';
@@ -8,21 +8,44 @@ const COLLECTION_STORAGE_KEY = '@collection';
 const WISHLIST_STORAGE_KEY = '@wishlist';
 
 const Record = ({navigation, route}) => {
-  // const {saveData: saveToCollection, storeData} = useStore(WISHLIST_STORAGE_KEY);
-  // const {saveData: saveToWishlist} = useStore(WISHLIST_STORAGE_KEY);
+  const [album, setAlbum] = useState(null);
+  useEffect(() => {
+    if (!route.params?.data) {
+      return;
+    }
+    const fetchAlbum = async () => {
+      //fetch album info using id
+      try {
+        console.log('fetch');
+        // `http://10.0.0.53:5000/getAlbum/${route.params.data}`
+
+        const request = await fetch(`http://10.0.0.53:5000/getAlbum/${route.params.data}`);
+        const requestJson = await request.json();
+        if (!requestJson) {
+          return;
+        }
+        setAlbum(requestJson);
+      } catch (error) {
+        console.log(`Error fetching album: ${error}`);
+      }
+    };
+    fetchAlbum();
+  }, [route]);
   const {getItem: getWishlist, setItem: addToWishlist} =
     useAsyncStorage(WISHLIST_STORAGE_KEY);
-  const {getItem: getCollection, setItem: addToCollection } = useAsyncStorage(COLLECTION_STORAGE_KEY);
+  const {getItem: getCollection, setItem: addToCollection} = useAsyncStorage(
+    COLLECTION_STORAGE_KEY,
+  );
 
   const onAddWishlistButtonPress = async () => {
     const wishlist = await getWishlist();
     if (wishlist) {
       console.log('yes');
-      const newJsonValue = [...JSON.parse(wishlist), route.params.data];
+      const newJsonValue = [...JSON.parse(wishlist), album];
       await addToWishlist(JSON.stringify(newJsonValue));
     } else {
       console.log('no');
-      await addToWishlist(JSON.stringify([route.params.data]));
+      await addToWishlist(JSON.stringify([album]));
     }
   };
 
@@ -30,51 +53,52 @@ const Record = ({navigation, route}) => {
     const wishlist = await getCollection();
     if (wishlist) {
       console.log('yes');
-      const newJsonValue = [...JSON.parse(wishlist), route.params.data];
+      const newJsonValue = [...JSON.parse(wishlist), album];
       await addToCollection(JSON.stringify(newJsonValue));
     } else {
       console.log('no');
-      await addToCollection(JSON.stringify([route.params.data]));
+      await addToCollection(JSON.stringify([album]));
     }
   };
 
   return (
-    <View>
-      <Image
-        style={styles.logo}
-        source={{
-          uri: route.params.data.images[0].uri,
-        }}
-      />
-      <View style={styles.actionBar}>
-        <Pressable onPress={onAddWishlistButtonPress}>
-          <Text style={styles.actionItem}>Add To Wishlist</Text>
-        </Pressable>
-        <Pressable onPress={onAddToCollectionButtonPress}>
-          <Text style={styles.actionItem}>Add to Collection</Text>
-        </Pressable>
-      </View>
-      <View>
-        <Text>{route.params.data.title}</Text>
-        <Text>{route.params.data.artists_sort}</Text>
-        {route.params.data.formats[0].text &&
-          ((
-            <Text>{route.params.data.formats[0].descriptions.join(', ')}</Text>
-          ),
-          (<Text>{route.params.data.formats[0].text}</Text>))}
-        <Text>{route.params.data.year}</Text>
-      </View>
-      <View>
-        <Text>Tracklist</Text>
-        {route.params.data.tracklist.map((item, index) => (
-          <Text key={index}>{item.title}</Text>
-        ))}
-      </View>
-      <View>
-        <Text>Notes</Text>
-        <Text>{route.params.data.notes}</Text>
-      </View>
-    </View>
+    album && (
+      <SafeAreaView>
+        <Image
+          style={styles.logo}
+          source={{
+            uri: album.images[0].uri,
+          }}
+        />
+        <View style={styles.actionBar}>
+          <Pressable onPress={onAddWishlistButtonPress}>
+            <Text style={styles.actionItem}>Add To Wishlist</Text>
+          </Pressable>
+          <Pressable onPress={onAddToCollectionButtonPress}>
+            <Text style={styles.actionItem}>Add to Collection</Text>
+          </Pressable>
+        </View>
+        <View>
+          <Text>{album.title}</Text>
+          <Text>{album.artists_sort}</Text>
+          {album.formats[0].text &&
+            ((<Text>{album.formats[0].descriptions.join(', ')}</Text>),
+            (<Text>{album.formats[0].text}</Text>))}
+          <Text>{album.year}</Text>
+        </View>
+        <View>
+          <Text>Tracklist</Text>
+          {album.tracklist &&
+            album.tracklist.map((item, index) => (
+              <Text key={index}>{item.title}</Text>
+            ))}
+        </View>
+        <View>
+          <Text>Notes</Text>
+          <Text>{album.notes}</Text>
+        </View>
+      </SafeAreaView>
+    )
   );
 };
 

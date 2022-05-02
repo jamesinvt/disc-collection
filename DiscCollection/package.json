@@ -10,6 +10,9 @@
     "lint": "eslint ."
   },
   "dependencies": {
+    "@fortawesome/fontawesome-svg-core": "^1.2.36",
+    "@fortawesome/free-solid-svg-icons": "^5.15.4",
+    "@fortawesome/react-native-fontawesome": "^0.2.7",
     "@react-native-async-storage/async-storage": "^1.15.11",
     "@react-navigation/bottom-tabs": "^6.0.7",
     "@react-navigation/native": "^6.0.4",
@@ -24,7 +27,9 @@
     "react-native-image-picker": "^4.1.1",
     "react-native-image-slider-box": "^1.1.8",
     "react-native-safe-area-context": "^3.3.2",
-    "react-native-screens": "^3.8.0"
+    "react-native-screens": "^3.8.0",
+    "react-native-svg": "^12.1.1",
+    "react-native-vector-icons": "^9.0.0"
   },
   "devDependencies": {
     "@babel/core": "^7.12.9",

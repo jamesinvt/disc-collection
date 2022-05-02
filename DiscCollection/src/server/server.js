@@ -28,14 +28,11 @@ const censoredWords = [
   '(album)',
   '[german import]',
 ];
-app.post('/request', upload.single('file'), (req, res) => {
-  console.log('file', req.file);
-  console.log('body', req.body);
+
+app.post('/googleGuess', upload.single('file'), (req, res) => {
   const image = './images/' + req.file.filename;
   var bitmap = fs.readFileSync(image);
   const image64 = new Buffer(bitmap).toString('base64');
-  // const image64 = testData.testData.toString('base64');
-  // const image64 = testData2.testData.toString('base64');
   const googleBody = JSON.stringify({
     requests: [
       {
@@ -67,15 +64,10 @@ app.post('/request', upload.single('file'), (req, res) => {
       return rawResponse.json();
     })
     .then(googleResponseJson => {
-      const bestGuess = JSON.stringify(
-        googleResponseJson.responses[0].webDetection.bestGuessLabels[0].label,
-      );
+      const bestGuess = googleResponseJson.responses[0].webDetection.bestGuessLabels[0].label;
+      console.log(`bestGuess: ${bestGuess}`);
+      console.log(googleResponseJson.responses[0].webDetection.bestGuessLabels[0].label);
       let guessArray = bestGuess.split(' ');
-      console.log(
-        JSON.stringify(
-          googleResponseJson.responses[0].webDetection.bestGuessLabels,
-        ),
-      );
       let safeArray = [];
       for (var i in guessArray) {
         let safe = true;
@@ -83,40 +75,52 @@ app.post('/request', upload.single('file'), (req, res) => {
           safe = false;
         }
         if (safe) {
+          console.log(`guessArray[i] ${guessArray[i]}`)
           safeArray.push(guessArray[i]);
+          console.log(`pre join safeArray: ${safeArray}`)
         }
       }
-      console.log('safeArray', safeArray);
-      console.log(`https://api.discogs.com/database/search?q=${encodeURIComponent(
-        bestGuess,
-      )}&type=release&key=${process.env.DISCOG_KEY}&secret=${
-        process.env.DISCOG_SECRET
-      }`);
-      const discogsSearchResponse = fetch(
-        // eslint-disable-next-line quotes
-        `https://api.discogs.com/database/search?q=${encodeURIComponent(
-          bestGuess,
-        )}&type=release&key=${process.env.DISCOG_KEY}&secret=${
-          process.env.DISCOG_SECRET
-        }`,
-      )
-        .then(rawResponse => {
-          return rawResponse.json();
-        })
-        .then(discogsSearchResponseJson => {
-          const discogsReleaseResponse = fetch(
-            // eslint-disable-next-line quotes
-            `https://api.discogs.com/releases/${discogsSearchResponseJson.results[0].id}?key=${process.env.DISCOG_KEY}&secret=${process.env.DISCOG_SECRET}`,
-          )
-            .then(rawResponse => {
-              return rawResponse.json();
-            })
-            .then(discogsReleaseResponseJson => {
-              // console.log(discogsReleaseResponseJson);
-              res.send(discogsReleaseResponseJson);
-            });
-        });
+      const cleanedBestGuess = safeArray.join(' ');
+      console.log(`post join safeArray: ${cleanedBestGuess}`)
+
+      res.send({bestGuess: cleanedBestGuess});
     });
+});
+
+app.get('/search', (req, res) => {
+
+  console.log(
+    `https://api.discogs.com/database/search?q=${encodeURIComponent(req.query.searchTerm)}&type=release&page=${req.query.page}&key=${process.env.DISCOG_KEY}&secret=${process.env.DISCOG_SECRET}`,
+  );
+  const discogsSearchResponse = fetch(
+    // eslint-disable-next-line quotes
+    `https://api.discogs.com/database/search?q=${encodeURIComponent(req.query.searchTerm)}&type=release&page=${req.query.page}&key=${process.env.DISCOG_KEY}&secret=${process.env.DISCOG_SECRET}`,
+  )
+    .then(rawResponse => {
+      return rawResponse.json();
+    })
+    .then(discogsSearchResponseJson => {
+      res.send(discogsSearchResponseJson);
+      //   const discogsReleaseResponse = fetch(
+      //     // eslint-disable-next-line quotes
+      //     `https://api.discogs.com/releases/${discogsSearchResponseJson.results[0].id}?key=${process.env.DISCOG_KEY}&secret=${process.env.DISCOG_SECRET}`,
+      //   )
+      //     .then(rawResponse => {
+      //       return rawResponse.json();
+      //     })
+      //     .then(discogsReleaseResponseJson => {
+      //       // console.log(discogsReleaseResponseJson);
+      //       res.send(discogsReleaseResponseJson);
+      //     });
+    });
+});
+
+app.get('/getAlbum/:albumId', async (req, res) => {
+  const reponse = await fetch(
+    `https://api.discogs.com/releases/${req.params.albumId}?key=${process.env.DISCOG_KEY}&secret=${process.env.DISCOG_SECRET}`,
+  );
+  const jsonResponse = await reponse.json();
+  res.send(jsonResponse);
 });
 
 app.listen(port, () => console.log(`Listening on port ${port}`));

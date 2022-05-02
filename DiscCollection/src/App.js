@@ -1,24 +1,28 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import {NavigationContainer} from '@react-navigation/native';
-import CollectionScreen from './screens/Collection';
+import CollectionStackScreen from './screens/Collection';
 import {Button, Modal, Pressable, Text, View} from 'react-native';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
-import WishList from './screens/Wishlist/widget';
+import WishlistStackScreen from './screens/Wishlist/widget';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
+// import GlobalCollectionScreen from './components/GlobalCollection';
 import Record from './screens/Record';
-import SearchScreen from './screens/Search/widget';
+import SearchStackScreen from './screens/Search/widget';
 import ModalOptions from './components/ModalOptions/widget';
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 
-const WishlistStack = createNativeStackNavigator();
+// const SearchStack = createNativeStackNavigator();
 
-function WishlistStackScreen() {
-  return (
-    <WishlistStack.Navigator>
-      <WishlistStack.Screen name="WishList" component={WishList} />
-      <WishlistStack.Screen name="Record" component={Record} />
-    </WishlistStack.Navigator>
-  );
-}
+// function SearchStackScreen({navigation, route}) {
+
+//   return (
+//     <SearchStack.Navigator>
+//       <SearchStack.Screen name="SearchResults" component={SearchResults} />
+//       <SearchStack.Screen name="Record" component={Record} />
+//     </SearchStack.Navigator>
+//   );
+// }
 
 const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();
@@ -42,11 +46,33 @@ const ModalScreen = ({navigation}) => {
 
 const Root = ({navigation}) => {
   return (
-    <Tab.Navigator screenOptions={{headerShown: false}}>
+    <Tab.Navigator screenOptions={{headerShown: false, tabBarInactiveTintColor: 'dimgray',tabBarLabelStyle: {
+      fontSize: 12,
+      },}}>
       <Tab.Group>
-        <Tab.Screen name="CollectionScreen" component={CollectionScreen} />
-        <Tab.Screen name="Wishlist" component={WishlistStackScreen} />
-        <Tab.Screen name="Search" component={SearchScreen} />
+        <Tab.Screen
+          name="CollectionScreen"
+          component={CollectionStackScreen}
+          options={{
+            tabBarLabel: 'Collection',
+            tabBarIcon: () => (
+              <MaterialCommunityIcons name="disc-player" color="black" size={23} />
+            ),
+          }}
+        />
+        <Tab.Screen name="Wishlist" component={WishlistStackScreen}
+        options={{
+          tabBarIcon: () => (
+            <MaterialIcons name="favorite-outline" color="black" size={23} />
+          ),
+        }} />
+        <Tab.Screen name="SearchScreen" component={SearchStackScreen} 
+        options={{
+          tabBarLabel: 'Search',
+          tabBarIcon: () => (
+            <MaterialIcons name="search" color="black" size={23} />
+          ),
+        }}/>
       </Tab.Group>
       <Tab.Group
         screenOptions={{presentation: 'transparentModal'}}
@@ -54,10 +80,14 @@ const Root = ({navigation}) => {
         <Tab.Screen
           name="Scan"
           component={ModalScreen}
-          options={{presentation: 'transparentModal'}}
+          options={{
+            tabBarLabel: 'Scan',          
+            tabBarIcon: () => (
+              <MaterialCommunityIcons name="barcode-scan" color="black" size={30} />
+            ),
+          }}
           listeners={({navigation}) => ({
             tabPress: e => {
-              // Prevent default action
               e.preventDefault();
               navigation.navigate('ModalScreen');
             },
