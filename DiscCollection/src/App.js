@@ -46,9 +46,14 @@ const ModalScreen = ({navigation}) => {
 
 const Root = ({navigation}) => {
   return (
-    <Tab.Navigator screenOptions={{headerShown: false, tabBarInactiveTintColor: 'dimgray',tabBarLabelStyle: {
-      fontSize: 12,
-      },}}>
+    <Tab.Navigator
+      screenOptions={{
+        headerShown: false,
+        tabBarInactiveTintColor: 'dimgray',
+        tabBarLabelStyle: {
+          fontSize: 12,
+        },
+      }}>
       <Tab.Group>
         <Tab.Screen
           name="CollectionScreen"
@@ -56,23 +61,33 @@ const Root = ({navigation}) => {
           options={{
             tabBarLabel: 'Collection',
             tabBarIcon: () => (
-              <MaterialCommunityIcons name="disc-player" color="black" size={23} />
+              <MaterialCommunityIcons
+                name="disc-player"
+                color="black"
+                size={23}
+              />
             ),
           }}
         />
-        <Tab.Screen name="Wishlist" component={WishlistStackScreen}
-        options={{
-          tabBarIcon: () => (
-            <MaterialIcons name="favorite-outline" color="black" size={23} />
-          ),
-        }} />
-        <Tab.Screen name="SearchScreen" component={SearchStackScreen} 
-        options={{
-          tabBarLabel: 'Search',
-          tabBarIcon: () => (
-            <MaterialIcons name="search" color="black" size={23} />
-          ),
-        }}/>
+        <Tab.Screen
+          name="Wishlist"
+          component={WishlistStackScreen}
+          options={{
+            tabBarIcon: () => (
+              <MaterialIcons name="favorite-outline" color="black" size={23} />
+            ),
+          }}
+        />
+        <Tab.Screen
+          name="SearchScreen"
+          component={SearchStackScreen}
+          options={{
+            tabBarLabel: 'Search',
+            tabBarIcon: () => (
+              <MaterialIcons name="search" color="black" size={23} />
+            ),
+          }}
+        />
       </Tab.Group>
       <Tab.Group
         screenOptions={{presentation: 'transparentModal'}}
@@ -81,9 +96,13 @@ const Root = ({navigation}) => {
           name="Scan"
           component={ModalScreen}
           options={{
-            tabBarLabel: 'Scan',          
+            tabBarLabel: 'Scan',
             tabBarIcon: () => (
-              <MaterialCommunityIcons name="barcode-scan" color="black" size={30} />
+              <MaterialCommunityIcons
+                name="barcode-scan"
+                color="black"
+                size={30}
+              />
             ),
           }}
           listeners={({navigation}) => ({

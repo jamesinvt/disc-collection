@@ -13,15 +13,17 @@ const styles = StyleSheet.create({
     width: '100%',
     height: 400,
   },
-  actionBar: {
-    display: 'flex',
-    flexDirection: 'row',
-    alignContent: 'center',
-    justifyContent: 'space-evenly',
+  header: {
+    backgroundColor: 'red',
+    fontSize: 20,
+    padding: 10,
+    marginVertical: 5,
   },
-  actionItem: {
-    height: 50,
-    display: 'flex',
+  divider: {
+    height: 1,
+    width: '100%',
+    backgroundColor: 'black',
+    marginVertical: 10,
   },
 });
 
