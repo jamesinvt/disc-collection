@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import {View, Text, Image, Pressable, SafeAreaView} from 'react-native';
+import {View, Text, Image, Pressable, SafeAreaView, ScrollView} from 'react-native';
 import {useAsyncStorage} from '@react-native-async-storage/async-storage';
 import styles from './styles';
 import useStore from '../../hooks/useStore';
@@ -64,6 +64,7 @@ const Record = ({navigation, route}) => {
   return (
     album && (
       <SafeAreaView>
+      <ScrollView>
         <Image
           style={styles.logo}
           source={{
@@ -79,12 +80,14 @@ const Record = ({navigation, route}) => {
           </Pressable>
         </View>
         <View>
+          <Text>Release Details</Text>
           <Text>{album.title}</Text>
           <Text>{album.artists_sort}</Text>
           {album.formats[0].text &&
             ((<Text>{album.formats[0].descriptions.join(', ')}</Text>),
             (<Text>{album.formats[0].text}</Text>))}
           <Text>{album.year}</Text>
+          <Text>__________</Text>
         </View>
         <View>
           <Text>Tracklist</Text>
@@ -92,11 +95,13 @@ const Record = ({navigation, route}) => {
             album.tracklist.map((item, index) => (
               <Text key={index}>{item.title}</Text>
             ))}
+        <Text>__________</Text>
         </View>
         <View>
           <Text>Notes</Text>
           <Text>{album.notes}</Text>
         </View>
+        </ScrollView>
       </SafeAreaView>
     )
   );
