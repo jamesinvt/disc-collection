@@ -6,11 +6,18 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     backgroundColor: 'red',
     padding: 10,
+    alignItems: 'center',
+    justifyContent: 'flex-start',
+    borderBottomWidth: 1,
   },
   searchInput: {
     backgroundColor: 'white',
-    width: '100%',
     padding: 5,
+    width: '91%',
+  },
+  searchButton: {
+    width: '8%',
+    marginHorizontal: 10,
   },
 });
 
