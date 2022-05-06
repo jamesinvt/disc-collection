@@ -5,6 +5,7 @@ import { useIsFocused, useNavigation } from '@react-navigation/native';
 import Record from '../../screens/Record';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import SearchAndFilter from '../SearchAndFilter';
+import styles from './styles';
 const GlobalCollection = ({ data }) => {
   const navigation = useNavigation();
   const isFocused = useIsFocused();
@@ -47,7 +48,7 @@ const GlobalCollection = ({ data }) => {
     );
   };
   return (
-    <SafeAreaView>
+    <SafeAreaView style={styles.container}>
       <SearchAndFilter searchTerm={searchTerm} setSearchTerm={setSearchTerm} />
       <FlatList
         data={items}

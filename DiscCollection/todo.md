@@ -14,6 +14,7 @@
 ## Bugs
 - [ ] Search not working at all
 - [ ] Collection screen not showing imagesScrollView
+- [ ] Clicking on a record in wishlists causes error when going to Record page
 ## Tests
 - [ ] Test with empty collection
   - [ ] Search -> Add to Collection/Wishlist
@@ -29,12 +30,14 @@
 - [ ] Style Tracklist and record info
 - [ ] Style Add to Wishlist/Collection buttons
 - [ ] Carousel for images
-- [ ] Append any scanned images    
+- [ ] Append any scanned images
+- [ ] Add an option to view other releases
 
 # Search Screen
 - [ ] Get it working
 - [ ] Styling
-
+- [ ] Search Results should go to the MASTER
+  - [ ] From here list all of the releases
 # Scan
 - [ ] Scan file
 - [ ] Scan from phone

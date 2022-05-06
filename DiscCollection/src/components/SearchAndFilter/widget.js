@@ -8,6 +8,7 @@ const ListItem = ({searchTerm, setSearchTerm}) => (
       placeholder={'Search...'}
       value={searchTerm}
       onChangeText={setSearchTerm}
+      style={styles.searchInput}
     />
   </View>
 );

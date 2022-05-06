@@ -73,7 +73,23 @@ const Record = ({navigation, route}) => {
   };
 
   const renderItemDivider = () => <View style={styles.divider} />;
-  const renderItem = ({item}) => <Text>{item.position} - {item.title}</Text>;
+  const renderItem = ({item}) => (
+    <View>
+      <Text>{item.position}</Text>
+      <Text>{item.title}</Text>
+    </View>
+  );
+
+  const TrackList = ({trackList}) => (
+    <View>
+      {trackList.map((item, index) => (
+        <View style={styles.track} key={index}>
+          <Text style={styles.trackPosition}>{item.position}</Text>
+          <Text style={styles.trackTitle}>{item.title}</Text>
+        </View>
+      ))}
+    </View>
+  );
 
   return (
     album && (
@@ -100,14 +116,7 @@ const Record = ({navigation, route}) => {
           </View>
           <View>
             <Text style={styles.header}>Tracklist</Text>
-            <View style={styles.content}>
-              <FlatList
-                data={album.tracklist}
-                renderItem={renderItem}
-                keyExtractor={(item, index) => index}
-                ItemSeparatorComponent={renderItemDivider}
-              />
-            </View>
+            <TrackList trackList={album.tracklist} />
           </View>
           <View>
             <Text style={styles.header}>Notes</Text>

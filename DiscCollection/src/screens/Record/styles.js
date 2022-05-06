@@ -17,13 +17,23 @@ const styles = StyleSheet.create({
     backgroundColor: 'red',
     fontSize: 20,
     padding: 10,
-    marginVertical: 5,
   },
-  divider: {
-    height: 1,
+  track: {
+    display: 'flex',
+    flexDirection: 'row',
+    alignItems: 'center',
+    borderBottomWidth: 1,
+    paddingVertical: 5,
+  },
+  trackTitle: {
     width: '100%',
-    backgroundColor: 'black',
-    marginVertical: 10,
+    height: '100%',
+  },
+  trackPosition: {
+    width: '10%',
+    height: '100%',
+    alignItems: 'center',
+    paddingLeft: 5,
   },
 });
 
